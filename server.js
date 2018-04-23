@@ -1,6 +1,10 @@
 
 const express = require('express');
 // we'll use morgan to log the HTTP layer
+
+//WHY WOULD THE SHOPPING LIST APP WORK BUT NOT THE
+//RECIPE LIST WITH OUT THE ROUTER
+const router = express.Router();
 const morgan = require('morgan');
 // we'll use body-parser's json() method to 
 // parse JSON data sent in requests to this app
@@ -8,7 +12,9 @@ const bodyParser = require('body-parser');
 
 // we import the ShoppingList model, which we'll
 // interact with in our GET endpoint
-const {ShoppingList} = require('./models');
+const {ShoppingList, Recipes} = require('./models');
+
+// const {Recipes} = require('./models');
 
 const jsonParser = bodyParser.json();
 const app = express();
@@ -24,11 +30,19 @@ app.use(morgan('common'));
 ShoppingList.create('beans', 2);
 ShoppingList.create('tomatoes', 3);
 ShoppingList.create('peppers', 4);
+// ADDED THINGS TO RECIPE SO WE GET SOMETHING BACK
+Recipes.create('chocolate milk', ['cocoa', 'milk', 'sugar']);
+Recipes.create('ice cream', ['chocolate', 'strawberry', 'vanilla']);
+Recipes.create('cheese cake', ['cherry', 'blueberry', 'plain']);
 
 // when the root of this route is called with GET, return
 // all current ShoppingList items by calling `ShoppingList.get()`
 app.get('/shopping-list', (req, res) => {
   res.json(ShoppingList.get());
+});
+
+app.get('/recipes', (req, res) => {
+	res.json(Recipes.get());
 });
 
 app.listen(process.env.PORT || 8080, () => {
